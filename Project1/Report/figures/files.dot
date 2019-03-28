@@ -1,0 +1,19 @@
+digraph G {
+    graph[rankdir=LR, center=true]
+    node [
+          color="black",
+          fontsize=20,
+          shape=box
+          ]
+    lab [label="lab5.py"];
+    ex1 [label="exercise1.py"];
+    edge[arrowhead="vee"];
+    lab->ex1;
+    subgraph exercise1_files {
+        ex1->"isometric_muscle_system.py";
+        ex1->"isotonic_muscle_system.py";
+        ex1->"muscle.py";
+        ex1->"system_parameters.py";
+        color=black;
+    }
+}
