@@ -116,6 +116,74 @@ def exercise1a():
     #plt.xlabel('Time [s]')
     #plt.ylabel('Muscle contractilve velocity')
     #plt.grid()
+    
+    #muscle with longer l_opt
+    muscle.L_OPT = 0.5
+    muscle_stimulation = 1.
+    lce = []
+    totalF = []
+    activeF=[]
+    passiveF=[]
+    for stretch in muscle_stretches:
+        # Run the integration
+        result = sys.integrate(x0=x0,
+                               time=time,
+                               time_step=time_step,
+                               stimulation=muscle_stimulation,
+                               muscle_length=stretch)
+        activeF.append(result.active_force[-1])
+        passiveF.append(result.passive_force[-1])
+        lce.append(result.l_ce[-1])
+        totalF.append(result.active_force[-1]+result.passive_force[-1])
+    plt.figure('muscle with l_opt=0.5')   
+    plt.title('muscle with l_opt=0.5')
+    plt.plot(lce, activeF)
+    plt.plot(lce, passiveF)
+    plt.plot(lce, totalF)
+    plt.xlabel('Muscle Stretch')
+    plt.ylabel('Force')
+    plt.ylim((0,4000))
+    plt.legend(('Active Force','Passive Force','Total Force'))
+
+    plt.grid()
+    
+    
+    
+    #muscle with shorter l_opt
+    t_start = 0.0
+    t_stop = 1
+    time_step = 0.005
+
+    time = np.arange(t_start, t_stop, time_step)
+    muscle_stretches = np.arange(0,0.3,0.01 )
+    muscle.L_OPT = 0.075
+    muscle_stimulation = 1.
+    lce = []
+    totalF = []
+    activeF=[]
+    passiveF=[]
+    plt.figure('muscle with l_opt=0.075')   
+
+    for stretch in muscle_stretches:
+        # Run the integration
+        result = sys.integrate(x0=x0,
+                               time=time,
+                               time_step=time_step,
+                               stimulation=muscle_stimulation,
+                               muscle_length=stretch)
+        activeF.append(result.active_force[-1])
+        passiveF.append(result.passive_force[-1])
+        lce.append(result.l_ce[-1])
+        totalF.append(result.active_force[-1]+result.passive_force[-1])
+    plt.title('muscle with l_opt=0.075')
+    plt.plot(lce, activeF)
+    plt.plot(lce, passiveF)
+    plt.plot(lce, totalF)
+    plt.xlabel('Muscle Stretch')
+    plt.ylabel('Force')
+    plt.ylim((0,4000))a
+    plt.legend(('Active Force','Passive Force','Total Force'))
+    plt.grid()
 
 
 def exercise1d():
