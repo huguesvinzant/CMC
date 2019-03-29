@@ -181,7 +181,7 @@ def exercise1a():
     plt.plot(lce, totalF)
     plt.xlabel('Muscle Stretch')
     plt.ylabel('Force')
-    plt.ylim((0,4000))a
+    plt.ylim((0,4000))
     plt.legend(('Active Force','Passive Force','Total Force'))
     plt.grid()
 
@@ -230,10 +230,12 @@ def exercise1d():
     # Set the initial condition
     x0 = [0.0, sys.muscle.L_OPT,
           sys.muscle.L_OPT + sys.muscle.L_SLACK, 0.0]
+    
     # x0[0] - -> activation
     # x0[1] - -> contractile length(l_ce)
     # x0[2] - -> position of the mass/load
     # x0[3] - -> velocity of the mass/load
+    
 
     # Set the time for integration
     t_start = 0.0
@@ -242,15 +244,36 @@ def exercise1d():
     time_stabilize = 0.2
 
     time = np.arange(t_start, t_stop, time_step)
+    
+    loads = np.arange(1, 500, 10)
+    
+    velocities = []
 
-    # Run the integration
-    result = sys.integrate(x0=x0,
-                           time=time,
-                           time_step=time_step,
-                           time_stabilize=time_stabilize,
-                           stimulation=muscle_stimulation,
-                           load=load)
+    for index, load in enumerate(loads):
+        
+        # Run the integration
+        result = sys.integrate(x0=x0,
+                               time=time,
+                               time_step=time_step,
+                               time_stabilize=time_stabilize,
+                               stimulation=muscle_stimulation,
+                               load=load)                
 
+        if (result.l_mtc[0] < sys.muscle.L_OPT + sys.muscle.L_SLACK):
+            velocities.append(np.max(result.v_ce))
+            print('max')
+        else:
+            velocities.append(np.min(result.v_ce))
+            print('min')
+
+
+    #Muscle contracile Velocity - Tension (load) relationship
+    
+    plt.figure('Isotonic muscle experiment')
+    plt.xlabel('Muscle Contractile Velocity [m/s]')
+    plt.ylabel('Tension [N]')
+    plt.plot(velocities, loads)
+    
     # Plotting
     #plt.figure('Isometric muscle experiment')
     #plt.plot(result.time, result.tendon_force)
@@ -261,7 +284,7 @@ def exercise1d():
 
 
 def exercise1():
-    exercise1a()
+    #exercise1a()
     exercise1d()
 
     if DEFAULT["save_figures"] is False:
