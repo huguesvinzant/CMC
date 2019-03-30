@@ -61,7 +61,7 @@ def exercise1a():
     time = np.arange(t_start, t_stop, time_step)
     
     # Evalute for a single muscle stimulation
-    muscle_stimulation = np.arange(0,1,0.2)
+    muscle_stimulation = np.arange(0,1.,0.2)
     
     # Several muscle stretch
     muscle_stretches = np.arange(0,0.3,0.01)
@@ -239,13 +239,13 @@ def exercise1d():
 
     # Set the time for integration
     t_start = 0.0
-    t_stop = 0.3
+    t_stop = 0.5
     time_step = 0.001
     time_stabilize = 0.2
 
     time = np.arange(t_start, t_stop, time_step)
     
-    loads = np.arange(1, 500, 10)
+    loads = np.arange(20, 501, 10)
     
     velocities = []
 
@@ -259,7 +259,7 @@ def exercise1d():
                                stimulation=muscle_stimulation,
                                load=load)                
 
-        if (result.l_mtc[0] < sys.muscle.L_OPT + sys.muscle.L_SLACK):
+        if (result.l_mtc[-1] < sys.muscle.L_OPT + sys.muscle.L_SLACK):
             velocities.append(np.max(result.v_ce))
             print('max')
         else:
@@ -274,13 +274,30 @@ def exercise1d():
     plt.ylabel('Tension [N]')
     plt.plot(velocities, loads)
     
-    # Plotting
-    #plt.figure('Isometric muscle experiment')
-    #plt.plot(result.time, result.tendon_force)
-    #plt.title('Isometric muscle experiment')
-    #plt.xlabel('Time [s]')
-    #plt.ylabel('Muscle Force')
-    #plt.grid()
+    muscle_stimulation = np.arange(0,1.1,0.2)
+    plt.figure('Isotonic muscle exp with different stimulations')
+
+    for stim in muscle_stimulation:
+        velocities = []
+        for index, load in enumerate(loads):
+            #    Run the integration
+            result = sys.integrate(x0=x0,
+                               time=time,
+                               time_step=time_step,
+                               time_stabilize=time_stabilize,
+                               stimulation=stim,
+                               load=load)                
+
+            if (result.l_mtc[-1] < sys.muscle.L_OPT + sys.muscle.L_SLACK):
+                velocities.append(np.max(result.v_ce))
+            else:
+                velocities.append(np.min(result.v_ce))
+        plt.xlabel('Muscle Contractile Velocity [m/s]')
+        plt.ylabel('Tension [N]')
+        plt.plot(velocities, loads)
+    
+    plt.legend(('0','0.2','0.4','0.6','0.8','1.0'))
+
 
 
 def exercise1():
