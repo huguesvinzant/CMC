@@ -245,7 +245,7 @@ def exercise1d():
 
     time = np.arange(t_start, t_stop, time_step)
     
-    loads = np.arange(20, 501, 10)
+    loads = np.arange(20, 351, 10)
     
     velocities = []
 
@@ -270,12 +270,17 @@ def exercise1d():
     #Muscle contracile Velocity - Tension (load) relationship
     
     plt.figure('Isotonic muscle experiment')
+    plt.title('Isotonic muscle experiment')
     plt.xlabel('Muscle Contractile Velocity [m/s]')
-    plt.ylabel('Tension [N]')
+    plt.ylabel('Tension (load) [N]')
     plt.plot(velocities, loads)
+    plt.grid()
+    
+    #For different stimulations 1.f
     
     muscle_stimulation = np.arange(0,1.1,0.2)
     plt.figure('Isotonic muscle exp with different stimulations')
+    plt.title('Isotonic muscle experiment with different stimulations')
 
     for stim in muscle_stimulation:
         velocities = []
@@ -293,11 +298,11 @@ def exercise1d():
             else:
                 velocities.append(np.min(result.v_ce))
         plt.xlabel('Muscle Contractile Velocity [m/s]')
-        plt.ylabel('Tension [N]')
+        plt.ylabel('Tension (load) [N]')
         plt.plot(velocities, loads)
     
     plt.legend(('0','0.2','0.4','0.6','0.8','1.0'))
-
+    plt.grid()
 
 
 def exercise1():
