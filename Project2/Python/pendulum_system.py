@@ -67,7 +67,7 @@ class PendulumSystem(object):
         if self.parameters.PERTURBATION is True:
             if 1.2 < time < 1.25:
                 pylog.warning('Perturbing the pendulum')
-                theta = 0.0
+                torque+= 300
 
         return np.array([
             [dtheta],

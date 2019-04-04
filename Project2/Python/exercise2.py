@@ -23,6 +23,7 @@ from system_parameters import (MuscleParameters, NetworkParameters,
 from system_simulation import SystemSimulation
 
 
+
 # Global settings for plotting
 # You may change as per your requirement
 plt.rc('lines', linewidth=2.0)
@@ -91,8 +92,8 @@ def exercise2():
     sys.add_muscle_system(muscles)  # Add the muscle model to the system
 
     ##### Time #####
-    t_max = 2.5  # Maximum simulation time
-    time = np.arange(0., t_max, 0.001)  # Time vector
+    t_max = 20  # Maximum simulation time
+    time = np.arange(0., t_max, 0.005)  # Time vector
 
     ##### Model Initial Conditions #####
     x0_P = np.array([np.pi/4, 0.])  # Pendulum initial condition
@@ -113,8 +114,10 @@ def exercise2():
     # Here you can define your muscle activation vectors
     # that are time dependent
 
-    act1 = np.ones((len(time), 1)) * 1.
-    act2 = np.ones((len(time), 1)) * 0.05
+    #act1 = np.ones((len(time), 1)) * 1.
+    #act2 = np.ones((len(time), 1)) * 0.05
+    act1 = np.array([np.sin(time)]).T
+    act2 = np.array([np.cos(time)]).T
 
     activations = np.hstack((act1, act2))
 
@@ -128,7 +131,7 @@ def exercise2():
 
     #: If you would like to perturb the pedulum model then you could do
     # so by
-    sim.sys.pendulum_sys.parameters.PERTURBATION = True
+    #sim.sys.pendulum_sys.parameters.PERTURBATION = True
     # The above line sets the state of the pendulum model to zeros between
     # time interval 1.2 < t < 1.25. You can change this and the type of
     # perturbation in
@@ -141,6 +144,15 @@ def exercise2():
     # res is np.array [time, states]
     # states vector is in the same order as x0
     res = sim.results()
+    
+    plt.figure("phase plane")
+    plt.plot(res[:, 1], res[:, 2])
+    plt.xlabel('Theta')
+    plt.ylabel('dTheta')
+    #U, V = np.meshgrid(res[:, 1], res[:, 2])
+    #plt.quiver(res[:, 1], res[:, 2],U,V)
+    
+    
 
     # In order to obtain internal states of the muscle
     # you can access the results attribute in the muscle class
