@@ -1,0 +1,34 @@
+digraph G {
+    graph[rankdir=LR, center=true]
+    node [
+          color="black",
+          fontsize=20,
+          shape=box
+          ]
+    lab [label="lab6.py"];
+    ex2 [label="exercise2.py"];
+    ex3 [label="exercise3.py"];
+    edge[arrowhead="vee"];
+    lab->ex2;
+    lab->ex3;
+    subgraph exercise_files {
+        ex2->"neural_system.py";
+        ex2->"muscle.py";
+        ex2->"muscle_system.py";
+        ex2->"pendulum_system.py";
+        ex2->"system.py";
+        ex2->"system_parameters.py";
+        ex2->"system_simulation.py";
+        ex2->"system_animation.py";
+
+        ex3->"neural_system.py";
+        ex3->"muscle.py";
+        ex3->"muscle_system.py";
+        ex3->"pendulum_system.py";
+        ex3->"system.py";
+        ex3->"system_parameters.py";
+        ex3->"system_simulation.py";
+        ex3->"system_animation.py";
+        color=black;
+    }
+}
