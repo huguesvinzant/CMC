@@ -82,6 +82,10 @@ def exercise3():
     N_params = NetworkParameters()  # Instantiate default network parameters
     N_params.D = 2.  # To change a network parameter
     # Similarly to change w -> N_params.w = (4x4) array
+    N_params.w = [[0,-5,-5,0],
+                  [-5,0,0,-5],
+                  [5,-5,0,0],
+                  [-5,5,0,0]]
 
     # Create a new neural network with above parameters
     neural_network = NeuralSystem(N_params)
@@ -115,40 +119,56 @@ def exercise3():
     # SystemSimulation is used to initialize the system and integrate
     # over time
 
-    sim = SystemSimulation(sys)  # Instantiate Simulation object
+    sim1 = SystemSimulation(sys)  # Instantiate Simulation object
+    sim2 = SystemSimulation(sys)
 
     # Add external inputs to neural network
+    sim2.add_external_inputs_to_network(np.ones((len(time), 4)))
+    #sim.add_external_inputs_to_network(ext_in)
 
-    # sim.add_external_inputs_to_network(np.ones((len(time), 4)))
-    # sim.add_external_inputs_to_network(ext_in)
-
-    sim.initalize_system(x0, time)  # Initialize the system state
+    sim1.initalize_system(x0, time)  # Initialize the system state
+    sim2.initalize_system(x0, time)
 
     # Integrate the system for the above initialized state and time
-    sim.simulate()
+    sim1.simulate()
+    sim2.simulate()
 
     # Obtain the states of the system after integration
     # res is np.array [time, states]
     # states vector is in the same order as x0
-    res = sim.results()
-
-    # Obtain the states of the system after integration
-    # res is np.array [time, states]
-    # states vector is in the same order as x0
-    res = sim.results()
-
-    # In order to obtain internal states of the muscle
-    # you can access the results attribute in the muscle class
-    muscle1_results = sim.sys.muscle_sys.Muscle1.results
-    muscle2_results = sim.sys.muscle_sys.Muscle2.results
+    res1 = sim1.results()
+    res2 = sim2.results()
 
     # Plotting the results
     plt.figure('Pendulum')
     plt.title('Pendulum Phase')
-    plt.plot(res[:, 0], res[:, :2])
+    plt.plot(res1[:, 1], res1[:, 2])
     plt.xlabel('Position [rad]')
     plt.ylabel('Velocity [rad.s]')
     plt.grid()
+    
+    plt.figure('Activation Wave Forms')
+    plt.title('Activation Wave Forms')
+    plt.plot(res1[:, 0], res1[:, 3])
+    plt.plot(res1[:, 0], res1[:, 5])
+    plt.xlabel('Time [s]')
+    plt.ylabel('Activation')
+    plt.grid
+    
+    plt.figure('Pendulum with external drive')
+    plt.title('Pendulum with external drive Phase')
+    plt.plot(res2[:, 1], res2[:, 2])
+    plt.xlabel('Position [rad]')
+    plt.ylabel('Velocity [rad.s]')
+    plt.grid()
+    
+    plt.figure('Activation Wave Forms with external drive')
+    plt.title('Activation Wave Forms with external drive')
+    plt.plot(res2[:, 0], res2[:, 3])
+    plt.plot(res2[:, 0], res2[:, 5])
+    plt.xlabel('Time [s]')
+    plt.ylabel('Activation')
+    plt.grid
 
     if DEFAULT["save_figures"] is False:
         plt.show()
