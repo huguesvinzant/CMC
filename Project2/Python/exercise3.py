@@ -156,7 +156,7 @@ def exercise3():
     plt.grid
     
     plt.figure('Pendulum with external drive')
-    plt.title('Pendulum with external drive Phase')
+    plt.title('Pendulum Phase, with external drive')
     plt.plot(res2[:, 1], res2[:, 2])
     plt.xlabel('Position [rad]')
     plt.ylabel('Velocity [rad.s]')

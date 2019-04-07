@@ -306,7 +306,7 @@ def exercise1d():
 
 
 def exercise1():
-    #exercise1a()
+    exercise1a()
     exercise1d()
 
     if DEFAULT["save_figures"] is False:
