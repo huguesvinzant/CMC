@@ -114,7 +114,7 @@ def exercise2b():
     #act1 = np.ones((len(time), 1)) * 1.
     #act2 = np.ones((len(time), 1)) * 0.05
     act1 = np.array([np.sin(time)]).T
-    act2 = np.array([np.cos(time)]).T
+    act2 = np.array([-np.sin(time)]).T
 
     activations = np.hstack((act1, act2))
 
@@ -187,7 +187,10 @@ def exercise2b():
     plt.plot(time, act2)
     plt.xlabel('Time [s]')
     plt.ylabel('Activation')
+    plt.legend(('Actication muscle 1','Activation muscle 2'))
     plt.grid
+    
+    poincare_crossings(res1, 0.5, 1, "poincare_cross")
 
     # To animate the model, use the SystemAnimation class
     # Pass the res(states) and systems you wish to animate
@@ -271,7 +274,7 @@ def exercise2c():
 
     for freq in frequencies:
         act1 = np.array([np.sin(freq*time)]).T
-        act2 = np.array([np.cos(freq*time)]).T
+        act2 = np.array([-np.sin(freq*time)]).T
     
         activations = np.hstack((act1, act2))
     
@@ -307,7 +310,7 @@ def exercise2c():
 
     for amp in amplitudes:
         act1 = np.array([amp*np.sin(time)]).T
-        act2 = np.array([amp*np.cos(time)]).T
+        act2 = np.array([amp*(-np.sin(time))]).T
     
         activations = np.hstack((act1, act2))
     
@@ -344,17 +347,17 @@ def poincare_crossings(res, threshold, crossing_index, figure):
     ci = crossing_index
 
     # Extract state of first trajectory
-    state = np.array(res.state[0])
+    state = res[:,2]
 
     # Crossing index (index corrsponds to last point before crossing)
-    idx = np.argwhere(np.diff(np.sign(state[:, ci] - threshold)) < 0)
+    idx = np.argwhere(np.diff(np.sign(state[ci, 2] - threshold)) < 0)
     # pylog.debug("Indices:\n{}".format(idx))  # Show crossing indices
 
     # Linear interpolation to find crossing position on threshold
     # Position before crossing
-    pos_pre = np.array([state[index[0], :] for index in idx])
+    pos_pre = np.array([state[index[0], 2] for index in idx])
     # Position after crossing
-    pos_post = np.array([state[index[0]+1, :] for index in idx])
+    pos_post = np.array([state[index[0]+1, 2] for index in idx])
     # Position on threshold
     pos_treshold = [
         (
@@ -373,8 +376,8 @@ def poincare_crossings(res, threshold, crossing_index, figure):
     val_max = np.sort(pos_treshold)[-2]
     bnd = 0.3*(val_max - val_min)
     plt.ylim([val_min-bnd, val_max+bnd])
-    plt.xlabel(u"Number of Poincaré section crossings")
-    plt.ylabel("Value for Neuron 1 (Neuron 2 = {})".format(threshold))
+    plt.xlabel("Number of Poincaré section crossings")
+    plt.ylabel(" (Neuron 2 = {})".format(threshold))
     plt.grid(True)
 
     # Figure limit cycle
@@ -403,7 +406,7 @@ def exercise2():
     """ Main function to run for Exercise 2.
 
     """
-    exercise2c();
+    exercise2b();
    
     if not DEFAULT["save_figures"]:
         plt.show()
