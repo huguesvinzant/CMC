@@ -62,7 +62,7 @@ def run_simulation(world, parameters, timestep, n_iterations, logs):
         "\n  - Amplitude: {}"
         "\n  - Phase lag: {}"
         "\n  - Turn: {}"
-    ).format(parameters[0], parameters[1], parameters[2]))
+    ).format(parameters[1], parameters[2], parameters[3]))
 
     # Setup salamander control
     salamander = SalamanderCMC(
@@ -104,13 +104,15 @@ def main():
     reset = RobotResetControl(world, n_joints)
 
     # Simulation example
-    amplitude = None
-    phase_lag = None
+    amplitude = 10
+    phase_lag = 4*np.pi/8
     turn = None
-    parameter_set = [
-        [freqs, amplitude, phase_lag, turn],
-        [freqs, amplitude, phase_lag, turn]
-    ]
+    #parameter_set = [
+     #   [freqs, amplitude, phase_lag, turn],
+     #   [freqs, amplitude, phase_lag, turn]
+    #]
+    parameter_set =[[freqs, amplitude, phase_lag, turn]]
+    
     for simulation_i, parameters in enumerate(parameter_set):
         reset.reset()
         run_simulation(

@@ -30,7 +30,10 @@ def amplitudes_ode(time, amplitudes, rate, amplitudes_desired):
 
 def motor_output(phases_left, phases_right, amplitudes_left, amplitudes_right):
     """Motor output"""
-    return np.zeros_like(amplitudes_left)
+    motor = np.zeros_like(amplitudes_left)
+    for i in range(10):
+        motor[i] = (amplitudes_left[i]*(1+np.cos(phases_left[i]))) - (amplitudes_right[i]*(1+np.cos(phases_right[i])))
+    return motor
 
 
 class ODESolver(object):
@@ -77,11 +80,12 @@ class PhaseEquation(ODESolver):
        
 
         # Set coupling weights
-        pylog.warning("Coupling weights must be set")
+        #pylog.warning("Coupling weights must be set")
         self.coupling_weights = 10*np.ones_like([2*self.n_joints, 2*self.n_joints])
 
         # Set desired phases
-        pylog.warning("Desired phases must be set")
+        #pylog.warning("Desired phases must be set")
+        #desired phases are the nominal phase lags
         self.phases_desired = phase_lag
          
         self.freqs =2*np.pi*freqs
@@ -113,11 +117,12 @@ class AmplitudeEquation(ODESolver):
         
 
         # Set convergence rates
-        pylog.warning("Convergence rates must be set")
+        #pylog.warning("Convergence rates must be set")
         self.rates = ((2*self.n_joints)**2)/8
 
         # Set desired amplitudes
-        pylog.warning("Desired amplitudes must be set")
+        #pylog.warning("Desired amplitudes must be set")
+        self.amplitudes =  amplitudes
         
     def step(self):
         """Step"""
