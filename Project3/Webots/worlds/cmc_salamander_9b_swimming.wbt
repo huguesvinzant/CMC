@@ -980,6 +980,7 @@ DEF SALAMANDER Robot {
   boundingObject USE SMALL_SEGMENT
   physics USE SEGMENT_PHYSICS
   controller "pythonController"
+  controllerArgs "9b"
   supervisor TRUE
 }
 DEF FLOOR Solid {

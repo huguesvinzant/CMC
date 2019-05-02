@@ -1,39 +1,47 @@
 """Oscillator network ODE"""
 
 import numpy as np
-import cmc_pylog as pylog
 
 from solvers import euler, rk4
+from robot_parameters import RobotParameters
 
 
-def phases_ode(time, phases, freqs, coupling_weights, phases_desired):
-    """Network phases ODE"""
+def network_ode(_time, state, parameters):
+    """Network_ODE
+
+    returns derivative of state (phases and amplitudes)
+
+    """
     
-    dphase = np.zeros_like(phases_desired)
+    phases = state[:parameters.n_oscillators]
+    amplitudes = state[parameters.n_oscillators:2*parameters.n_oscillators]
+    
+    phi = parameters.phase_bias
+    coupling_weights = parameters.coupling_weights
+    freqs = parameters.freqs
+    a = parameters.rates
+    R = parameters.nominal_amplitudes
+    
+    dphase = np.zeros_like(phases)
+    damplitudes = np.zeros_like(amplitudes)
+    
     
     for i, phase_i in enumerate(phases):
-        sums = 0
+        sums = 0;
         for j, phase_j in enumerate(phases):
-            sums += coupling_weights[i][j]*np.sin(phase_j-phase_i-phases_desired[i][j])
-        dphase[i] = 2*np.pi*freqs[i] + sums
-    
-    return dphase
-
-def amplitudes_ode(time, amplitudes, rate, amplitudes_desired):
-    """Network amplitudes ODE"""
-    amps = np.zeros_like(amplitudes)
-    for i, amp in enumerate(amplitudes):
-        amps[i] = rate[i]*(amplitudes_desired[i]-amplitudes[j])
-    
-    return amps
+            sums += coupling_weights[i][j]*np.sin(phase_j-phase_i-phi[i][j])
+        dphase[i] = 2*np.pi*freqs[i]+sums
+        damplitudes[i]= a[i]*(R[i]-amplitudes[i])
+        
+    return np.concatenate([dphase, damplitudes])
 
 
-def motor_output(phases_left, phases_right, amplitudes_left, amplitudes_right):
+def motor_output(phases, amplitudes):
     """Motor output"""
-    motor = np.zeros_like(amplitudes_left)
-    for i in range(10):
-        motor[i] = (amplitudes_left[i]*(1+np.cos(phases_left[i]))) - (amplitudes_right[i]*(1+np.cos(phases_right[i])))
-    return motor
+    
+    djoint_angles = amplitudes[:10]*(1+np.cos(phases[:10]))-amplitudes[10:20]*(1+np.cos(phases[10:20]))
+    
+    return djoint_angles
 
 
 class ODESolver(object):
@@ -48,7 +56,7 @@ class ODESolver(object):
 
     def integrate(self, state, *parameters):
         """Step"""
-        dstate = self.solver(
+        diff_state = self.solver(
             self.ode,
             self.timestep,
             self._time,
@@ -56,112 +64,66 @@ class ODESolver(object):
             *parameters
         )
         self._time += self.timestep
-        return dstate
+        return diff_state
 
     def time(self):
         """Time"""
         return self._time
 
 
-class PhaseEquation(ODESolver):
-    """Phase ODE equation"""
+class RobotState(np.ndarray):
+    """Robot state"""
 
-    def __init__(self, timestep, freqs, phase_lag):
-        super(PhaseEquation, self).__init__(phases_ode, timestep, euler)
-        self.n_joints = 10
-        self.phases = 1e-4*np.random.ranf(2*self.n_joints)
-        self.freqs = freqs
-        self.coupling_weights = np.zeros([2*self.n_joints, 2*self.n_joints])
-        self.phases_desired = np.zeros([2*self.n_joints, 2*self.n_joints])
-        self.set_parameters(freqs, phase_lag)
+    def __init__(self, *_0, **_1):
+        super(RobotState, self).__init__()
+        self[:] = 0.0
 
-    def set_parameters(self, freqs, phase_lag):
-        """Set parameters of the network"""
-       
+    @classmethod
+    def salamandra_robotica_2(cls):
+        """State of Salamandra robotica 2"""
+        return cls(2*24, dtype=np.float64, buffer=np.zeros(2*24))
 
-        # Set coupling weights
-        #pylog.warning("Coupling weights must be set")
-        self.coupling_weights = 10*np.ones_like([2*self.n_joints, 2*self.n_joints])
+    @property
+    def phases(self):
+        """Oscillator phases"""
+        return self[:24]
 
-        # Set desired phases
-        #pylog.warning("Desired phases must be set")
-        #desired phases are the nominal phase lags
-        self.phases_desired = phase_lag
-         
-        self.freqs =2*np.pi*freqs
-         
-    def step(self):
-        """Step"""
-        self.phases += self.integrate(
-            self.phases,
-            self.freqs,
-            self.coupling_weights,
-            self.phases_desired
-        )
+    @phases.setter
+    def phases(self, value):
+        self[:24] = value
+
+    @property
+    def amplitudes(self):
+        """Oscillator phases"""
+        return self[24:]
+
+    @amplitudes.setter
+    def amplitudes(self, value):
+        self[24:] = value
 
 
-class AmplitudeEquation(ODESolver):
-    """Amplitude ODE equation"""
-
-    def __init__(self, timestep, amplitudes, turn):
-        super(AmplitudeEquation, self).__init__(
-            amplitudes_ode, timestep, euler)
-        self.n_joints = 10
-        self.amplitudes = np.zeros(2*self.n_joints)
-        self.rates = np.zeros(2*self.n_joints)
-        self.amplitudes_desired = np.zeros(2*self.n_joints)
-        self.set_parameters(amplitudes, turn)
-
-    def set_parameters(self, amplitudes, turn):
-        """Set parameters of the network"""
-        
-
-        # Set convergence rates
-        #pylog.warning("Convergence rates must be set")
-        self.rates = ((2*self.n_joints)**2)/8
-
-        # Set desired amplitudes
-        #pylog.warning("Desired amplitudes must be set")
-        self.amplitudes =  amplitudes
-        
-    def step(self):
-        """Step"""
-        self.amplitudes += self.integrate(
-            self.amplitudes,
-            self.rates,
-            self.amplitudes_desired
-        )
-
-
-class SalamanderNetwork(object):
+class SalamanderNetwork(ODESolver):
     """Salamander oscillator network"""
 
-    def __init__(self, timestep, freqs, amplitudes, phase_lag, turn):
-        super(SalamanderNetwork, self).__init__()
-        # Phases
-        self.phase_equation = PhaseEquation(
-            timestep,
-            freqs,
-            phase_lag
+    def __init__(self, timestep, parameters):
+        super(SalamanderNetwork, self).__init__(
+            ode=network_ode,
+            timestep=timestep,
+            solver=rk4  # Feel free to switch between Euler (euler) or
+                        # Runge-Kutta (rk4) integration methods
         )
-        # Amplitude
-        self.amplitude_equation = AmplitudeEquation(
-            timestep,
-            amplitudes,
-            turn
-        )
+        # States
+        self.state = RobotState.salamandra_robotica_2()
+        # Parameters
+        self.parameters = RobotParameters(parameters)
+        # Set initial state
+        self.state.phases = 1e-4*np.random.ranf(self.parameters.n_oscillators)
 
     def step(self):
         """Step"""
-        self.phase_equation.step()
-        self.amplitude_equation.step()
+        self.state += self.integrate(self.state, self.parameters)
 
     def get_motor_position_output(self):
         """Get motor position"""
-        return motor_output(
-            self.phase_equation.phases[:10],
-            self.phase_equation.phases[10:],
-            self.amplitude_equation.amplitudes[:10],
-            self.amplitude_equation.amplitudes[10:]
-        )
+        return motor_output(self.state.phases, self.state.amplitudes)
 

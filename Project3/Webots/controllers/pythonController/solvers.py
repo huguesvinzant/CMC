@@ -1,4 +1,4 @@
-"""ODE solvers using dixed step integration"""
+"""ODE solvers using fixed step integration"""
 
 
 def euler(ode, timestep, time, state, *parameters):

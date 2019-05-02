@@ -59,7 +59,9 @@ def plot_2d(results, labels, n_data=300, log=False, cmap=None):
     plt.plot(results[:, 0], results[:, 1], "r.")
     imgplot = plt.imshow(
         results_interp,
-        extent=extent, origin='lower', aspect='auto',
+        extent=extent,
+        aspect='auto',
+        origin='lower',
         interpolation="none",
         norm=LogNorm() if log else None
     )
@@ -76,7 +78,7 @@ def main(plot=True):
     # Load data
     with np.load('logs/example/simulation_0.npz') as data:
         timestep = float(data["timestep"])
-        amplitude = data["amplitude"]
+        amplitude = data["amplitudes"]
         phase_lag = data["phase_lag"]
         link_data = data["links"][:, 0, :]
         joints_data = data["joints"]

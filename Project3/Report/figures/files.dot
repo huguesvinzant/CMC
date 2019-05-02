@@ -1,0 +1,51 @@
+digraph G {
+    graph[rankdir=LR, center=true]
+    node [
+          color="black",
+          fontsize=20,
+          shape=box
+          ]
+
+    "cmc_salamander_9_example.wbt"->"pythonController.py"
+    "cmc_salamander_9b_swimming.wbt"->"pythonController.py"
+    "cmc_salamander_9c_swimming.wbt"->"pythonController.py"
+    "cmc_salamander_9d1_swimming.wbt"->"pythonController.py"
+    "cmc_salamander_9d2_swimming.wbt"->"pythonController.py"
+    "cmc_salamander_9f_walking.wbt"->"pythonController.py"
+    "cmc_salamander_9g_transition.wbt"->"pythonController.py"
+
+    "pythonController.py"->"exercise_example.py"
+    "pythonController.py"->"exercise_9b.py"
+    "pythonController.py"->"exercise_9c.py"
+    "pythonController.py"->"exercise_9d.py"
+    "pythonController.py"->"exercise_9f.py"
+    "pythonController.py"->"exercise_9g.py"
+
+    "exercise_example.py"->"run_simulation.py"
+    "exercise_9b.py"->"run_simulation.py"
+    "exercise_9c.py"->"run_simulation.py"
+    "exercise_9d.py"->"run_simulation.py"
+    "exercise_9f.py"->"run_simulation.py"
+    "exercise_9g.py"->"run_simulation.py"
+
+    "run_simulation.py"->"cmc_robot.py"
+    "cmc_robot.py"->"network.py"
+    "robot_parameters.py"->"network.py"
+    "run_simulation.py"->"simulation_parameters.py"
+    "simulation_parameters.py"->"robot_parameters.py"
+
+    {
+        rank = same;
+        "run_simulation.py";
+        "cmc_robot.py";
+        "network.py";
+    }
+
+    {
+        rank = same;
+        "simulation_parameters.py"
+        "robot_parameters.py";
+    }
+
+    color=black;
+}

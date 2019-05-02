@@ -1,127 +1,58 @@
 """Python controller"""
 
-# You may need to import some classes of the controller module. Ex:
-#  from controller import Robot, LED, DistanceSensor
-import numpy as np
 import cmc_pylog as pylog
 from controller import Supervisor
-from cmc_robot import SalamanderCMC
-
-
-class RobotResetControl(object):
-    """Robot reset control"""
-
-    def __init__(self, world, n_joints):
-        super(RobotResetControl, self).__init__()
-        self.world = world
-        self.n_joints = n_joints
-        self.salamander = self.world.getFromDef("SALAMANDER")
-        self.initial_position = np.array(
-            self.salamander.getField("translation").getSFVec3f()
-        )
-        self.initial_rotation = np.array(
-            self.salamander.getField("rotation").getSFRotation()
-        )
-        self.solid_links = [
-            self.world.getFromDef("SOLID_{}".format(i+1))
-            for i in range(10)
-        ]
-        self.hinge_joints = [
-            self.world.getFromDef("JOINT_PARAM_{}".format(i+1))
-            for i in range(10)
-        ]
-
-    def reset(self):
-        """Reset state"""
-        self.reset_pose()
-        self.reset_internal()
-
-    def reset_pose(self):
-        """Reset robot pose"""
-        self.salamander.getField("translation").setSFVec3f(
-            self.initial_position.tolist()
-        )
-        self.salamander.getField("rotation").setSFRotation(
-            self.initial_rotation.tolist()
-        )
-
-    def reset_internal(self):
-        """Reset intenal links and joints states"""
-        for i in range(self.n_joints):
-            self.hinge_joints[i].getField("position").setSFFloat(0)
-            # self.hinge_joints[i].setVelocity([0, 0, 0, 0, 0, 0])
-            self.solid_links[i].setVelocity([0, 0, 0, 0, 0, 0])
-
-
-def run_simulation(world, parameters, timestep, n_iterations, logs):
-    """Run simulation"""
-
-    # Set parameters
-    pylog.info((
-        "Running new simulation:"
-        "\n  - Amplitude: {}"
-        "\n  - Phase lag: {}"
-        "\n  - Turn: {}"
-    ).format(parameters[1], parameters[2], parameters[3]))
-
-    # Setup salamander control
-    salamander = SalamanderCMC(
-        world,
-        n_iterations,
-        logs=logs,
-        freqs=parameters[0],
-        amplitudes=parameters[1],
-        phase_lag=parameters[2],
-        turn=parameters[3]
-    )
-
-    # Simulation
-    iteration = 0
-    while world.step(timestep) != -1:
-        iteration += 1
-        if iteration >= n_iterations:
-            break
-        salamander.step()
-
-    # Log data
-    pylog.info("Logging simulation data to {}".format(logs))
-    salamander.log.save_data()
+from reset import RobotResetControl
+from exercise_example import exercise_example
+from exercise_9b import exercise_9b
+from exercise_9c import exercise_9c
+from exercise_9d import exercise_9d1, exercise_9d2
+from exercise_9f import exercise_9f
+from exercise_9g import exercise_9g
 
 
 def main():
     """Main"""
 
-    # Duration of each simulation
-    simulation_duration = 20
-
     # Get supervisor to take over the world
     world = Supervisor()
     n_joints = 10
     timestep = int(world.getBasicTimeStep())
-    freqs = 1
 
     # Get and control initial state of salamander
     reset = RobotResetControl(world, n_joints)
 
-    # Simulation example
-    amplitude = 10
-    phase_lag = 4*np.pi/8
-    turn = None
-    #parameter_set = [
-     #   [freqs, amplitude, phase_lag, turn],
-     #   [freqs, amplitude, phase_lag, turn]
-    #]
-    parameter_set =[[freqs, amplitude, phase_lag, turn]]
-    
-    for simulation_i, parameters in enumerate(parameter_set):
-        reset.reset()
-        run_simulation(
-            world,
-            parameters,
-            timestep,
-            int(1000*simulation_duration/timestep),
-            logs="./logs/example/simulation_{}.npz".format(simulation_i)
-        )
+    # Simulation arguments
+    arguments = world.getControllerArguments()
+    pylog.info("Arguments passed to smulation: {}".format(arguments))
+
+    # Exercise example to show how to run a grid search
+    if "example" in arguments:
+        exercise_example(world, timestep, reset)
+
+    # Exercise 9b - Phase lag + amplitude study
+    if "9b" in arguments:
+        exercise_9b(world, timestep, reset)
+
+    # Exercise 9c - Gradient amplitude study
+    if "9c" in arguments:
+        exercise_9c(world, timestep, reset)
+
+    # Exercise 9d1 - Turning
+    if "9d1" in arguments:
+        exercise_9d1(world, timestep, reset)
+
+    # Exercise 9d2 - Backwards swimming
+    if "9d2" in arguments:
+        exercise_9d2(world, timestep, reset)
+
+    # Exercise 9f - Walking
+    if "9f" in arguments:
+        exercise_9f(world, timestep, reset)
+
+    # Exercise 9g - Transitions
+    if "9g" in arguments:
+        exercise_9g(world, timestep, reset)
 
     # Pause
     world.simulationSetMode(world.SIMULATION_MODE_PAUSE)
