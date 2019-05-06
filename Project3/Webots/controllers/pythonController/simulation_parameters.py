@@ -16,7 +16,7 @@ class SimulationParameters(dict):
         self.phase_lag = None
         self.amplitude_gradient = None
         # Feel free to add more parameters (ex: MLR drive)
-        self.drive_mlr = 1.5
+        self.drive_mlr = 4.5
         # ...
         # Update object with provided keyword arguments
         self.update(kwargs)  # NOTE: This overrides the previous declarations
