@@ -25,13 +25,15 @@ def main():
     # Simulation arguments
     arguments = world.getControllerArguments()
     pylog.info("Arguments passed to smulation: {}".format(arguments))
-
+    
     # Exercise example to show how to run a grid search
     if "example" in arguments:
         exercise_example(world, timestep, reset)
 
     # Exercise 9b - Phase lag + amplitude study
     if "9b" in arguments:
+        pylog.info("Running 9b.....")
+        #exercise_example(world, timestep, reset)
         exercise_9b(world, timestep, reset)
 
     # Exercise 9c - Gradient amplitude study

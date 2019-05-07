@@ -102,10 +102,10 @@ class SalamanderCMC(object):
         # Update control
         for i in range(self.N_BODY_JOINTS):
             self.motors_body[i].setPosition(positions[i])
-        for i in range(self.N_LEGS):
-            self.motors_legs[i].setPosition(
-                positions[self.N_BODY_JOINTS+i] - np.pi/2
-            )
+#        for i in range(self.N_LEGS):
+#            self.motors_legs[i].setPosition(
+#                positions[self.N_BODY_JOINTS+i] - np.pi/2
+#            )
 
         # Log data
         self.log_iteration()

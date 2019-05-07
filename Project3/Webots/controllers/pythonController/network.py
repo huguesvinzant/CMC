@@ -41,6 +41,7 @@ def motor_output(phases, amplitudes):
     
     djoint_angles = amplitudes[:10]*(1+np.cos(phases[:10]))-amplitudes[10:20]*(1+np.cos(phases[10:20]))
     
+    
     return djoint_angles
 
 

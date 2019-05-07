@@ -86,7 +86,7 @@ class RobotParameters(dict):
         matrix[22][10:15] = 30
         matrix[23][15:20] = 30
         
-        self.coupling_weights = matrix
+        self.coupling_weights = matrix.T
              
         #pylog.warning("Coupling weights must be set")
 
@@ -114,14 +114,14 @@ class RobotParameters(dict):
         matrix[22][10:15] = np.pi
         matrix[23][15:20] = np.pi
         
-        self.phase_bias = matrix
+        self.phase_bias = matrix.T
         
         #pylog.warning("Phase bias must be set")
 
     def set_amplitudes_rate(self, parameters):
         """Set amplitude rates"""
         
-        self.rates = 20*np.ones(self.n_oscillators)
+        self.rates = 10*np.ones(self.n_oscillators)
         
         #pylog.warning("Convergence rates must be set")
 
