@@ -121,7 +121,7 @@ class RobotParameters(dict):
     def set_amplitudes_rate(self, parameters):
         """Set amplitude rates"""
         
-        self.rates = 10*np.ones(self.n_oscillators)
+        self.rates = 3*np.ones(self.n_oscillators)
         
         #pylog.warning("Convergence rates must be set")
 

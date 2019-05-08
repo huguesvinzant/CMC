@@ -38,10 +38,9 @@ def network_ode(_time, state, parameters):
 
 def motor_output(phases, amplitudes):
     """Motor output"""
-    
-    djoint_angles = amplitudes[:10]*(1+np.cos(phases[:10]))-amplitudes[10:20]*(1+np.cos(phases[10:20]))
-    
-    
+    djoint_angles = np.zeros(14)
+    djoint_angles[:10] = amplitudes[:10]*(1+np.cos(phases[:10]))-amplitudes[10:20]*(1+np.cos(phases[10:20]))
+    djoint_angles[10:] = amplitudes[20:]*(1+np.cos(phases[20:]))
     return djoint_angles
 
 
