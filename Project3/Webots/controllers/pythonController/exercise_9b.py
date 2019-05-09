@@ -14,13 +14,13 @@ def exercise_9b(world, timestep, reset):
     parameter_set = [
         SimulationParameters(
             simulation_duration=10,
-            drive=2,
-            amplitudes=amp,
-            phase_lag=np.zeros(n_joints),
+            drive=4,
+            amplitude_gradient = [1,1],
+            phase_lag=phi,
             turn=0,
             # ...
         )
-        for amp in np.linspace(1, 25, 50)
+        for phi in [2*np.pi, np.pi, np.pi/3 , 2*np.pi/10]
         # for amplitudes in ...
         # for ...
     ]
@@ -31,6 +31,7 @@ def exercise_9b(world, timestep, reset):
 #                                          turn=0)]
 
     # Grid search
+    energy = []
     for simulation_i, parameters in enumerate(parameter_set):
         pylog.debug("Param {}".format(simulation_i))
         reset.reset()
@@ -41,7 +42,10 @@ def exercise_9b(world, timestep, reset):
             int(1000*parameters.simulation_duration/timestep),
             logs="./logs/simulation9b_{}.npz".format(simulation_i)
         )
-    plot_results.main()
-
+        data = np.load('logs/simulation9b_{}.npz'.format(simulation_i))
+        velocity = data["joints"][:,:,1]
+        torque = data["joints"][:,:,3]
+        energy.append(np.mean(velocity*torque))
+    pylog.info(energy)
 
 

@@ -28,6 +28,8 @@ class RobotParameters(dict):
         self.phase_bias = np.zeros([self.n_oscillators, self.n_oscillators])
         self.rates = np.zeros(self.n_oscillators)
         self.nominal_amplitudes = np.zeros(self.n_oscillators)
+        self.amplitude_gradient = parameters.amplitude_gradient
+        self.phase_lag = parameters.phase_lag
         self.update(parameters)
 
     def update(self, parameters):
@@ -52,7 +54,7 @@ class RobotParameters(dict):
         if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
             freq_body = 0.2*parameters.drive_mlr + 0.3
         
-        d_high = 3.0
+        d_high = 3.1
         
         if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
             freq_limb = 0.2*parameters.drive_mlr
@@ -63,6 +65,7 @@ class RobotParameters(dict):
         self.freqs = freqs
 
         #pylog.warning("Coupling weights must be set")
+        pylog.warning(self.freqs)    
 
     def set_coupling_weights(self, parameters):
         """Set coupling weights"""
@@ -89,12 +92,13 @@ class RobotParameters(dict):
         self.coupling_weights = matrix.T
              
         #pylog.warning("Coupling weights must be set")
-
+        
     def set_phase_bias(self, parameters):
         """Set phase bias"""
         
         matrix = np.zeros([24,24])
-        upwards_weights = 2*np.pi/8*np.ones(19)
+        upwards_weights = self.phase_lag*np.ones(19)
+        #upwards_weights = (3*np.pi/10)*np.ones(19)
         weights = np.pi*np.ones(10)
         
         np.fill_diagonal(matrix[1:], -upwards_weights)
@@ -143,11 +147,17 @@ class RobotParameters(dict):
         
         if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
             amp_limb = 0.131*parameters.drive_mlr + 0.131
-
-        nominal_amplitudes[:20] = amp_body
+            
+        gradient = np.linspace(self.amplitude_gradient[0],self.amplitude_gradient[1], 10)
+        pylog.info(np.shape(gradient))
+        gradient_ = np.concatenate((gradient, gradient))
+        pylog.info(np.shape(gradient_))
+        nominal_amplitudes[:20] = amp_body*gradient_
         nominal_amplitudes[20:] = amp_limb
+        
         
         self.nominal_amplitudes = nominal_amplitudes
         
         #pylog.warning("Nominal amplitudes must be set")
+        
 

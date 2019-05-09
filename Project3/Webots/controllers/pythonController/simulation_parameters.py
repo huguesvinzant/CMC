@@ -1,5 +1,5 @@
 """Simulation parameters"""
-
+import numpy as np
 
 class SimulationParameters(dict):
     """Simulation parameters"""
@@ -13,10 +13,10 @@ class SimulationParameters(dict):
         self.n_body_joints = 10
         self.n_legs_joints = 4
         self.simulation_duration = 30
-        self.phase_lag = None
-        self.amplitude_gradient = None
+        self.phase_lag = (2*np.pi/10)*np.ones(19)
+        self.amplitude_gradient = [1,1]
         # Feel free to add more parameters (ex: MLR drive)
-        self.drive_mlr = 4
+        self.drive_mlr = 3.0
         # ...
         # Update object with provided keyword arguments
         self.update(kwargs)  # NOTE: This overrides the previous declarations
