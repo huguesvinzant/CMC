@@ -70,6 +70,25 @@ class RobotParameters(dict):
     def set_coupling_weights(self, parameters):
         """Set coupling weights"""
         
+#        matrix = np.zeros([24,24])
+#        body_weights = 10*np.ones(19)
+#        np.fill_diagonal(matrix[1:], body_weights)
+#        np.fill_diagonal(matrix[:,1:], body_weights)
+#        
+#        np.fill_diagonal(matrix[10:], body_weights[:10])
+#        np.fill_diagonal(matrix[:,10:], body_weights[:10])
+#        
+#        np.fill_diagonal(matrix[21:], body_weights[:3])
+#        np.fill_diagonal(matrix[:,21:], body_weights[:3])
+#        
+#        matrix[22][20] = 10
+#        matrix[23][21] = 10
+#        
+#        matrix[20][0:5] = 30
+#        matrix[21][5:10] = 30
+#        matrix[22][10:15] = 30
+#        matrix[23][15:20] = 30
+        
         matrix = np.zeros([24,24])
         body_weights = 10*np.ones(19)
         np.fill_diagonal(matrix[1:], body_weights)
@@ -89,7 +108,7 @@ class RobotParameters(dict):
         matrix[22][10:15] = 30
         matrix[23][15:20] = 30
         
-        self.coupling_weights = matrix.T
+        self.coupling_weights = matrix
              
         #pylog.warning("Coupling weights must be set")
         
@@ -97,12 +116,12 @@ class RobotParameters(dict):
         """Set phase bias"""
         
         matrix = np.zeros([24,24])
-        upwards_weights = self.phase_lag*np.ones(19)
-        #upwards_weights = (3*np.pi/10)*np.ones(19)
+        #upwards_weights = self.phase_lag*np.ones(19)
+        upwards_weights = (3*np.pi/10)*np.ones(19)
         weights = np.pi*np.ones(10)
         
-        np.fill_diagonal(matrix[1:], -upwards_weights)
-        np.fill_diagonal(matrix[:,1:], upwards_weights)
+        np.fill_diagonal(matrix[1:], upwards_weights)
+        np.fill_diagonal(matrix[:,1:], -upwards_weights)
         
         np.fill_diagonal(matrix[10:], weights)
         np.fill_diagonal(matrix[:,10:], weights)
@@ -118,14 +137,14 @@ class RobotParameters(dict):
         matrix[22][10:15] = np.pi
         matrix[23][15:20] = np.pi
         
-        self.phase_bias = matrix.T
+        self.phase_bias = matrix
         
         #pylog.warning("Phase bias must be set")
 
     def set_amplitudes_rate(self, parameters):
         """Set amplitude rates"""
         
-        self.rates = 3*np.ones(self.n_oscillators)
+        self.rates = 5*np.ones(self.n_oscillators)
         
         #pylog.warning("Convergence rates must be set")
 

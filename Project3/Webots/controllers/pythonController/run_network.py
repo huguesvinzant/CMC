@@ -17,7 +17,7 @@ def run_network(duration, update=False, drive=0):
     times = np.arange(0, duration, timestep)
     n_iterations = len(times)
     parameters = SimulationParameters(
-        drive=4,
+        drive=4.5,
         amplitude_gradient=[0.1,0.3],
         phase_lag=None,
         turn=None,
@@ -74,7 +74,7 @@ def run_network(duration, update=False, drive=0):
 
     # Implement plots of network results
     #pylog.warning("Implement plots")
-    plot_positions(times, outputs_log)
+    plot_positions(times, outputs_log[:,:10])
 
 
 def main(plot):
