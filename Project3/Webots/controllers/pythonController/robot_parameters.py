@@ -70,45 +70,29 @@ class RobotParameters(dict):
     def set_coupling_weights(self, parameters):
         """Set coupling weights"""
         
-#        matrix = np.zeros([24,24])
-#        body_weights = 10*np.ones(19)
-#        np.fill_diagonal(matrix[1:], body_weights)
-#        np.fill_diagonal(matrix[:,1:], body_weights)
-#        
-#        np.fill_diagonal(matrix[10:], body_weights[:10])
-#        np.fill_diagonal(matrix[:,10:], body_weights[:10])
-#        
-#        np.fill_diagonal(matrix[21:], body_weights[:3])
-#        np.fill_diagonal(matrix[:,21:], body_weights[:3])
-#        
-#        matrix[22][20] = 10
-#        matrix[23][21] = 10
-#        
-#        matrix[20][0:5] = 30
-#        matrix[21][5:10] = 30
-#        matrix[22][10:15] = 30
-#        matrix[23][15:20] = 30
         
         matrix = np.zeros([24,24])
-        body_weights = 10*np.ones(19)
-        np.fill_diagonal(matrix[1:], body_weights)
-        np.fill_diagonal(matrix[:,1:], body_weights)
+
+        np.fill_diagonal(matrix[1:20], 10)
+        np.fill_diagonal(matrix[:,1:20], 10)
+        matrix[9,10] = 0
+        matrix[10,9] = 0
         
-        np.fill_diagonal(matrix[10:], body_weights[:10])
-        np.fill_diagonal(matrix[:,10:], body_weights[:10])
+        np.fill_diagonal(matrix[10:20], 10)
+        np.fill_diagonal(matrix[:,10:20], 10)
         
-        np.fill_diagonal(matrix[21:], body_weights[:3])
-        np.fill_diagonal(matrix[:,21:], body_weights[:3])
         
-        matrix[22][20] = 10
-        matrix[23][21] = 10
+        matrix[20,21:23] = 10
+        matrix[21:23,20] = 10
+        matrix[23,21:23] = 10
+        matrix[21:23,23] = 10
         
-        matrix[20][0:5] = 30
-        matrix[21][5:10] = 30
-        matrix[22][10:15] = 30
-        matrix[23][15:20] = 30
+        matrix[0:5,20] = 30
+        matrix[5:10,21] = 30
+        matrix[10:15,22] = 30
+        matrix[15:20,23] = 30
         
-        self.coupling_weights = matrix
+        self.coupling_weights = matrix.T
              
         #pylog.warning("Coupling weights must be set")
         
@@ -116,35 +100,37 @@ class RobotParameters(dict):
         """Set phase bias"""
         
         matrix = np.zeros([24,24])
-        #upwards_weights = self.phase_lag*np.ones(19)
-        upwards_weights = (3*np.pi/10)*np.ones(19)
-        weights = np.pi*np.ones(10)
+
+        upwards_weights = self.phase_lag
+        weights = np.pi
         
-        np.fill_diagonal(matrix[1:], upwards_weights)
-        np.fill_diagonal(matrix[:,1:], -upwards_weights)
+        np.fill_diagonal(matrix[1:20], -upwards_weights)
+        np.fill_diagonal(matrix[:,1:20], upwards_weights)
+        matrix[9,10] = 0
+        matrix[10,9] = 0
         
-        np.fill_diagonal(matrix[10:], weights)
-        np.fill_diagonal(matrix[:,10:], weights)
+        np.fill_diagonal(matrix[10:20], weights)
+        np.fill_diagonal(matrix[:,10:20], weights)
+
         
-        np.fill_diagonal(matrix[21:], weights[:3])
-        np.fill_diagonal(matrix[:,21:], weights[:3])
+        matrix[20,21:23] = np.pi
+        matrix[21:23,20] = np.pi
+        matrix[23,21:23] = np.pi
+        matrix[21:23,23] = np.pi
         
-        matrix[22][20] = np.pi
-        matrix[23][21] = np.pi
+        matrix[0:5,20] = np.pi
+        matrix[5:10,21] = np.pi
+        matrix[10:15,22] = np.pi
+        matrix[15:20,23] = np.pi
         
-        matrix[20][0:5] = np.pi
-        matrix[21][5:10] = np.pi
-        matrix[22][10:15] = np.pi
-        matrix[23][15:20] = np.pi
-        
-        self.phase_bias = matrix
+        self.phase_bias = matrix.T
         
         #pylog.warning("Phase bias must be set")
 
     def set_amplitudes_rate(self, parameters):
         """Set amplitude rates"""
         
-        self.rates = 5*np.ones(self.n_oscillators)
+        self.rates = 20*np.ones(self.n_oscillators)
         
         #pylog.warning("Convergence rates must be set")
 
@@ -162,7 +148,7 @@ class RobotParameters(dict):
         if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
             amp_body = 0.065*parameters.drive_mlr + 0.196
         
-        d_high = 3.0
+        d_high = 3.1
         
         if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
             amp_limb = 0.131*parameters.drive_mlr + 0.131
