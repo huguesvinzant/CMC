@@ -30,7 +30,7 @@ def exercise_9c(world, timestep, reset):
             parameters,
             timestep,
             int(1000*parameters.simulation_duration/timestep),
-            logs="./logs/simulation9b_{}.npz".format(simulation_i)
+            logs="./logs/simulation9c_{}.npz".format(simulation_i)
         )
        
 
