@@ -14,7 +14,6 @@ def plot_positions(times, link_data):
     for i, data in enumerate(link_data.T):
         plt.plot(times, data, label=["x", "y", "z"])
     plt.legend()
-    plt.title('Spinal joint angles (d=4.5)')
     plt.xlabel("Time [s]")
     plt.ylabel("Distance [m]")
     plt.grid(True)

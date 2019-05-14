@@ -16,12 +16,7 @@ def run_network(duration, update=False, drive=0):
     timestep = 5e-3
     times = np.arange(0, duration, timestep)
     n_iterations = len(times)
-    parameters = SimulationParameters(
-        drive=4.5,
-        amplitude_gradient=[0.1,0.3],
-        phase_lag=None,
-        turn=None,
-    )
+    parameters = SimulationParameters()
     network = SalamanderNetwork(timestep, parameters)
     osc_left = np.arange(10)
     osc_right = np.arange(10, 20)
