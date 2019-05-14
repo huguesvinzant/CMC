@@ -40,7 +40,12 @@ def motor_output(phases, amplitudes):
     """Motor output"""
     djoint_angles = np.zeros(14)
     djoint_angles[:10] = amplitudes[:10]*(1+np.cos(phases[:10]))-amplitudes[10:20]*(1+np.cos(phases[10:20]))
-    djoint_angles[10:] = -phases[20:]
+    #check if the amplitudes from the leg oscillators are not zero, if they are zero, the output
+    #should be zero too
+    if len([i!= 0.0 for i in amplitudes[20:]])!=0:
+        djoint_angles[10:] = -phases[20:]
+    else:
+        djoint_angles[10:] = np.zeros(4)
     return djoint_angles
 
 
