@@ -77,10 +77,10 @@ def plot_2d(results, labels, n_data=300, log=False, cmap=None):
 def main(plot=True):
     """Main"""
     # Load data
-    with np.load('logs/simulation9b_8.npz') as data:
+    with np.load('logs/simulation9f_0.npz') as data:
         timestep = float(data["timestep"])
-        amplitude = data["amplitudes"]
-        phase_lag = data["phase_lag"]
+        #amplitude = data["amplitudes"]
+        #phase_lag = data["phase_lag"]
         link_data = data["links"][:, 0, :]
         joints_data = data["joints"]
     times = np.arange(0, timestep*np.shape(link_data)[0], timestep)

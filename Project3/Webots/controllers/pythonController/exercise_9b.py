@@ -17,10 +17,9 @@ def exercise_9b(world, timestep, reset):
     parameter_set = [
         SimulationParameters(
             simulation_duration=10,
-            drive=1.5,
-            amplitude_gradient = [1,1],
+            drive=4.5,
+            amplitude_gradient = [0.2,1],
             phase_lag=phi,
-            turn=0,
             # ...
         )
         #for phi in [2*np.pi/10, 2*np.pi, np.pi, np.pi/3]

@@ -30,6 +30,8 @@ class RobotParameters(dict):
         self.nominal_amplitudes = np.zeros(self.n_oscillators)
         self.amplitude_gradient = parameters.amplitude_gradient
         self.phase_lag = parameters.phase_lag
+        self.turn = parameters.turn
+        self.offset = parameters.offset
         self.update(parameters)
         
 
@@ -121,10 +123,10 @@ class RobotParameters(dict):
         matrix[23,21:23] = np.pi
         matrix[21:23,23] = np.pi
         
-        matrix[0:5,20] = np.pi
-        matrix[5:10,21] = np.pi
-        matrix[10:15,22] = np.pi
-        matrix[15:20,23] = np.pi
+        matrix[0:5,20] = self.offset
+        matrix[5:10,21] = self.offset
+        matrix[10:15,22] = self.offset
+        matrix[15:20,23] = self.offset
         
         self.phase_bias = matrix
         
@@ -163,6 +165,10 @@ class RobotParameters(dict):
         nominal_amplitudes[:20] = amp_body*gradient_
         nominal_amplitudes[20:] = amp_limb
         
+        if(self.turn[1] == 'right' or self.turn[1] == 'Right'):
+            nominal_amplitudes[10:20] = nominal_amplitudes[10:20]*self.turn[0]
+        elif(self.turn[1] == 'left' or self.turn[1] == 'Left'):
+            nominal_amplitudes[0:10] = nominal_amplitudes[0:10]*self.turn[0]
         
         self.nominal_amplitudes = nominal_amplitudes
         
