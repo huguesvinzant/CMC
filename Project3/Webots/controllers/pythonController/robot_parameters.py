@@ -31,6 +31,8 @@ class RobotParameters(dict):
         self.amplitude_gradient = parameters.amplitude_gradient
         self.phase_lag = parameters.phase_lag
         self.update(parameters)
+        self.cr1_limb = parameters.cr1_limb
+        self.cr1_body = parameters.cr1_body
 
     def update(self, parameters):
         """Update network from parameters"""
@@ -51,12 +53,12 @@ class RobotParameters(dict):
         d_high = 5.0
         d_low = 1.0
 
-        if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
+        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
             freq_body = 0.2*parameters.drive_mlr + 0.3
         
-        d_high = 3.1
+        d_high = 3.0
         
-        if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
+        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
             freq_limb = 0.2*parameters.drive_mlr
 
         freqs[:20] = freq_body
@@ -75,6 +77,7 @@ class RobotParameters(dict):
 
         np.fill_diagonal(matrix[1:20], 10)
         np.fill_diagonal(matrix[:,1:20], 10)
+        #the oscillators 10 and 11 are not connected in either direction
         matrix[9,10] = 0
         matrix[10,9] = 0
         
@@ -106,6 +109,7 @@ class RobotParameters(dict):
         
         np.fill_diagonal(matrix[1:20], -upwards_weights)
         np.fill_diagonal(matrix[:,1:20], upwards_weights)
+        #the oscillators 10 and 11 are not connected in either direction
         matrix[9,10] = 0
         matrix[10,9] = 0
         
@@ -130,7 +134,7 @@ class RobotParameters(dict):
     def set_amplitudes_rate(self, parameters):
         """Set amplitude rates"""
         
-        self.rates = 20*np.ones(self.n_oscillators)
+        self.rates = 2*np.ones(self.n_oscillators)
         
         #pylog.warning("Convergence rates must be set")
 
@@ -145,13 +149,13 @@ class RobotParameters(dict):
         d_high = 5.0
         d_low = 1.0
 
-        if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
-            amp_body = 0.065*parameters.drive_mlr + 0.196
+        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
+            amp_body = self.cr1_body*parameters.drive_mlr + 0.196
         
-        d_high = 3.1
+        d_high = 3.0
         
-        if parameters.drive_mlr > d_low and parameters.drive_mlr < d_high:
-            amp_limb = 0.131*parameters.drive_mlr + 0.131
+        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
+            amp_limb = self.cr1_limb*parameters.drive_mlr + 0.131
             
         gradient = np.linspace(self.amplitude_gradient[0],self.amplitude_gradient[1], 10)
         pylog.info(np.shape(gradient))
