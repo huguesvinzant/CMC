@@ -31,8 +31,7 @@ class RobotParameters(dict):
         self.amplitude_gradient = parameters.amplitude_gradient
         self.phase_lag = parameters.phase_lag
         self.update(parameters)
-        self.cr1_limb = parameters.cr1_limb
-        self.cr1_body = parameters.cr1_body
+        
 
     def update(self, parameters):
         """Update network from parameters"""
@@ -95,7 +94,7 @@ class RobotParameters(dict):
         matrix[10:15,22] = 30
         matrix[15:20,23] = 30
         
-        self.coupling_weights = matrix.T
+        self.coupling_weights = matrix
              
         #pylog.warning("Coupling weights must be set")
         
@@ -107,8 +106,8 @@ class RobotParameters(dict):
         upwards_weights = self.phase_lag
         weights = np.pi
         
-        np.fill_diagonal(matrix[1:20], -upwards_weights)
-        np.fill_diagonal(matrix[:,1:20], upwards_weights)
+        np.fill_diagonal(matrix[1:20], upwards_weights)
+        np.fill_diagonal(matrix[:,1:20], -upwards_weights)
         #the oscillators 10 and 11 are not connected in either direction
         matrix[9,10] = 0
         matrix[10,9] = 0
@@ -127,7 +126,7 @@ class RobotParameters(dict):
         matrix[10:15,22] = np.pi
         matrix[15:20,23] = np.pi
         
-        self.phase_bias = matrix.T
+        self.phase_bias = matrix
         
         #pylog.warning("Phase bias must be set")
 
@@ -150,12 +149,12 @@ class RobotParameters(dict):
         d_low = 1.0
 
         if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
-            amp_body = self.cr1_body*parameters.drive_mlr + 0.196
+            amp_body = 0.065*parameters.drive_mlr + 0.196
         
         d_high = 3.0
         
         if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
-            amp_limb = self.cr1_limb*parameters.drive_mlr + 0.131
+            amp_limb = 0.131*parameters.drive_mlr + 0.131
             
         gradient = np.linspace(self.amplitude_gradient[0],self.amplitude_gradient[1], 10)
         pylog.info(np.shape(gradient))

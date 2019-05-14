@@ -29,7 +29,7 @@ def network_ode(_time, state, parameters):
     for i, phase_i in enumerate(phases):
         sums = 0;
         for j, phase_j in enumerate(phases):
-            sums += coupling_weights[i][j]*np.sin(phase_j-phase_i-phi[i][j])
+            sums += amplitudes[j]*coupling_weights[i][j]*np.sin(phases[j]-phases[i]-phi[i,j])
         dphase[i] = 2*np.pi*freqs[i]+sums
         damplitudes[i]= a[i]*(R[i]-amplitudes[i])
         

@@ -64,7 +64,7 @@ class ExperimentLogger(object):
         self.joints[0, :, :] = self.joints[1, :, :]
         # Diff position to extract velocity
         self.joints[:, :, 1] = (
-            np.diff(self.joints[:, :, 0], axis=-1, prepend=0)
+            np.diff(self.joints[:, :, 0], axis=0, prepend=0)
             / self.parameters["timestep"]
         )
         # Save
