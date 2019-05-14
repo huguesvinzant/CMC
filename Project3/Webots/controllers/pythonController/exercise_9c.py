@@ -19,7 +19,6 @@ def exercise_9c(world, timestep, reset):
             drive=4.5,
             amplitude_gradient = [head, tail],
             phase_lag=2*np.pi/10,
-            turn=0,
             # ...
         )
         for head in np.linspace(0.1,1.0,5)]

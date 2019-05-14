@@ -32,6 +32,7 @@ class RobotParameters(dict):
         self.phase_lag = parameters.phase_lag
         self.turn = parameters.turn
         self.offset = parameters.offset
+        self.amp_factor = parameters.amp_factor
         self.update(parameters)
         
 
@@ -170,7 +171,7 @@ class RobotParameters(dict):
         elif(self.turn[1] == 'left' or self.turn[1] == 'Left'):
             nominal_amplitudes[0:10] = nominal_amplitudes[0:10]*self.turn[0]
         
-        self.nominal_amplitudes = nominal_amplitudes
+        self.nominal_amplitudes = self.amp_factor*nominal_amplitudes
         
         #pylog.warning("Nominal amplitudes must be set")
         
