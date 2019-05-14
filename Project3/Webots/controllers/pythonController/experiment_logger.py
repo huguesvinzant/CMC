@@ -41,10 +41,6 @@ class ExperimentLogger(object):
         """Log joint position"""
         self.joints[iteration, joint, self.ID_J["position"]] = position
 
-    def log_joint_velocity(self, iteration, joint, velocity):
-        """Log joint velocity"""
-        self.joints[iteration, joint, self.ID_J["velocity"]] = velocity
-
     def log_joint_cmd(self, iteration, joint, cmd):
         """Log joint cmd"""
         self.joints[iteration, joint, self.ID_J["cmd"]] = cmd
@@ -66,6 +62,11 @@ class ExperimentLogger(object):
         # Unlogged initial positions (Step not updated by Webots)
         self.links[0, :, :] = self.links[1, :, :]
         self.joints[0, :, :] = self.joints[1, :, :]
+        # Diff position to extract velocity
+        self.joints[:, :, 1] = (
+            np.diff(self.joints[:, :, 0], axis=-1, prepend=0)
+            / self.parameters["timestep"]
+        )
         # Save
         os.makedirs(os.path.dirname(self.filename), exist_ok=True)
         np.savez(

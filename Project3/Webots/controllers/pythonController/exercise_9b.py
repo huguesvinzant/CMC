@@ -17,14 +17,14 @@ def exercise_9b(world, timestep, reset):
     parameter_set = [
         SimulationParameters(
             simulation_duration=10,
-            drive=4.5,
+            drive=1.5,
             amplitude_gradient = [1,1],
             phase_lag=phi,
             turn=0,
             # ...
         )
         #for phi in [2*np.pi/10, 2*np.pi, np.pi, np.pi/3]
-        for phi in [2*np.pi/(3*10), 2*np.pi/10, 3*2*np.pi/10]
+        for phi in [ 2*np.pi/(3*10),2*np.pi/10, 3*2*np.pi/10]
         # for amplitudes in ...
         # for ...
     ]
@@ -63,17 +63,18 @@ def exercise_9b(world, timestep, reset):
         data = np.load('logs/simulation9b_{}.npz'.format(simulation_i))
         velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
         velocity = np.insert(velocity,0,0,axis = 0)
-        torque = data["joints"][:,:,3]
+        torque = data["joints"][:,:,2]
         pylog.info("energyyyyy")
         pylog.info(np.mean(velocity*torque))
         energy.append(np.mean(velocity*torque))
         file.write('\n')
-        #file.write(str(np.mean(velocity))+ ' ')
+        file.write('velocity with diff ' + str(np.mean(velocity))+'  ')
         file.write('trapz mean '+ str(np.mean(np.trapz(velocity*torque,dx = timestep)))+ ' ')
-        file.write('trapz std '+ str(np.std(np.trapz(velocity*torque,dx = timestep)))+ ' ')
-        file.write('beginning pos ' + str(np.mean(data["links"][1,0,:])))
-        file.write('end pos ' + str(np.mean(data["links"][-1,0,:])))
+        file.write('trapz std '+ str(np.std(np.trapz(velocity*torque,dx = timestep)))+ '\n')
         
+#        file.write('beginning pos ' + str(np.mean(data["links"][1,0,:])))
+#        file.write('end pos ' + str(np.mean(data["links"][-1,0,:])))
+
         #file.write(str(np.std(velocity*torque))+ '\n')
     file.close()
 
