@@ -33,6 +33,7 @@ class RobotParameters(dict):
         self.turn = parameters.turn
         self.offset = parameters.offset
         self.amp_factor = parameters.amp_factor
+        self.drive = parameters.drive_mlr
         self.update(parameters)
         
 
@@ -55,13 +56,13 @@ class RobotParameters(dict):
         d_high = 5.0
         d_low = 1.0
 
-        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
-            freq_body = 0.2*parameters.drive_mlr + 0.3
+        if self.drive >= d_low and self.drive <= d_high:
+            freq_body = 0.2*self.drive + 0.3
         
         d_high = 3.0
         
-        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
-            freq_limb = 0.2*parameters.drive_mlr
+        if self.drive >= d_low and self.drive <= d_high:
+            freq_limb = 0.2*self.drive
 
         freqs[:20] = freq_body
         freqs[20:] = freq_limb
@@ -151,13 +152,13 @@ class RobotParameters(dict):
         d_high = 5.0
         d_low = 1.0
 
-        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
-            amp_body = 0.065*parameters.drive_mlr + 0.196
+        if self.drive >= d_low and self.drive <= d_high:
+            amp_body = 0.065*self.drive + 0.196
         
         d_high = 3.0
         
-        if parameters.drive_mlr >= d_low and parameters.drive_mlr <= d_high:
-            amp_limb = 0.131*parameters.drive_mlr + 0.131
+        if self.drive >= d_low and self.drive <= d_high:
+            amp_limb = 0.131*self.drive + 0.131
             
         gradient = np.linspace(self.amplitude_gradient[0],self.amplitude_gradient[1], 10)
         pylog.info(np.shape(gradient))

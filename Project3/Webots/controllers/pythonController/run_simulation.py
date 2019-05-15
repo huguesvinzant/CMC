@@ -28,14 +28,14 @@ def run_simulation(world, parameters, timestep, n_iterations, logs):
 
 
     # Simulation
-#    pos =[]
+    #pos =[]
     iteration = 0
     while world.step(timestep) != -1:
         iteration += 1
         if iteration >= n_iterations:
             break
         salamander.step()
-#        pos.append(salamander.position_sensors[1])
+        #pos.append(salamander.position_sensors[1])
     
     
 #    plot_results.plot_positions(np.arange(0,n_iterations*timestep, timestep),pos)

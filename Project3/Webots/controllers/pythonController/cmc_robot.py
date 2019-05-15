@@ -68,6 +68,19 @@ class SalamanderCMC(object):
     def log_iteration(self):
         """Log state"""
         self.log.log_link_positions(self.iteration, 0, self.gps.getValues())
+        
+        # for values of x smaller than 0 we are swimming 
+        if self.gps.getValues()[0] > 0: 
+            self.network.parameters.drive = 4.5
+            
+            self.network.parameters.freqs[:20] = 0.2*self.network.parameters.drive + 0.3
+            self.network.parameters.freqs[20:] = 0
+            
+            self.network.parameters.nominal_amplitudes[:20] = 0.065*self.network.parameters.drive + 0.131
+            self.network.parameters.nominal_amplitudes[20:] = 0
+        
+     
+        
         for i, motor in enumerate(self.motors_body):
             # Position
             self.log.log_joint_position(
