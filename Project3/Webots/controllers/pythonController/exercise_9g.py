@@ -6,5 +6,13 @@ from simulation_parameters import SimulationParameters
 
 def exercise_9g(world, timestep, reset):
     """Exercise 9g"""
-    pass
+    
+    parameters = SimulationParameters(
+            simulation_duration=20, 
+            amplitude_gradient = [0.2,1], 
+            phase_lag=2*np.pi/10, 
+            turn=[1, 'Right'],
+            offset = np.pi, #optimal phase lag
+            amp_factor = amp
+            ) 
 

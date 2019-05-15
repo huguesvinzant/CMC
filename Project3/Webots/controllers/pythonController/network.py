@@ -21,6 +21,7 @@ def network_ode(_time, state, parameters):
     freqs = parameters.freqs
     a = parameters.rates
     R = parameters.nominal_amplitudes
+    #R = 0.3*np.ones_like(amplitudes)
     
     dphase = np.zeros_like(phases)
     damplitudes = np.zeros_like(amplitudes)

@@ -75,7 +75,7 @@ def run_network(duration, update=False, drive=0):
 def main(plot):
     """Main"""
 
-    run_network(duration=5)
+    run_network(duration=10)
 
     # Show plots
     if plot:
