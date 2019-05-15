@@ -25,5 +25,18 @@ def exercise_9d1(world, timestep, reset):
 
 def exercise_9d2(world, timestep, reset):
     """Exercise 9d2"""
-    pass
+    parameters = SimulationParameters(
+            simulation_duration=10, 
+            drive=4.5, 
+            amplitude_gradient = [0.2,1], 
+            phase_lag=2*np.pi/10, 
+            turn=[1., 'Right'],
+            # ...
+        )
+    run_simulation(
+            world,
+            parameters,
+            timestep,
+            int(1000*parameters.simulation_duration/timestep),
+            logs="./logs/simulation9d2.npz")
 

@@ -69,7 +69,7 @@ def run_network(duration, update=False, drive=0):
 
     # Implement plots of network results
     #pylog.warning("Implement plots")
-    plot_positions(times, outputs_log[:,:10])
+    plot_positions(times, outputs_log[:,10:])
 
 
 def main(plot):

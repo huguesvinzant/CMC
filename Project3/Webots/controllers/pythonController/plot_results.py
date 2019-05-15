@@ -12,8 +12,8 @@ from parse_args import save_plots
 def plot_positions(times, link_data):
     """Plot positions"""
     for i, data in enumerate(link_data.T):
-        plt.plot(times, data, label=["x", "y", "z"])
-    plt.legend()
+        plt.plot(times, data)
+    plt.legend(['x', 'y', 'z'])
     plt.title('Spinal joint angles (d=4.5)')
     plt.xlabel("Time [s]")
     plt.ylabel("Distance [m]")
@@ -87,20 +87,21 @@ def main(plot=True):
     print(type(joints_data))
     # Plot data
     #plt.figure("Positions")
-    #plot_positions(times, link_data)
-    speed = np.zeros(20)
-    for simulation_i in range(0,20):
-            
-            data = np.load("logs/simulation9f_2{}.npz".format(simulation_i))
-            velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
-            velocity = np.insert(velocity,0,0,axis = 0)
-            speed[simulation_i] = np.mean(velocity)
     
-    plt.plot(np.linspace(0,2,20), speed)
-    plt.xlabel('amplitude')
-    plt.ylabel('mean velocity')
-    plt.title('Velocity as a function of oscillation amplitude')
-    plt.show()
+    
+    data = np.load("logs/simulation9d2.npz")
+    link_data = data["links"][:, 0, :]
+    times = np.arange(0, timestep*np.shape(link_data)[0], timestep)
+    plot_positions(times, link_data)
+    
+#    velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
+#    velocity = np.insert(velocity,0,0,axis = 0)
+    
+#    plt.plot(np.linspace(0,2,20), speed)
+#    plt.xlabel('amplitude')
+#    plt.ylabel('mean velocity')
+#    plt.title('Velocity as a function of oscillation amplitude')
+#    plt.show()
 
     # Show plots
     if plot:
