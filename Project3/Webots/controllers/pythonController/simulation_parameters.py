@@ -17,7 +17,7 @@ class SimulationParameters(dict):
         self.amplitude_gradient = [1,1]
         self.turn = [1, 'Right']
         # Feel free to add more parameters (ex: MLR drive)
-        self.drive_mlr = 1.5
+        self.drive_mlr = 4.5
         self.offset = np.pi
         self.amp_factor = 1.
     
