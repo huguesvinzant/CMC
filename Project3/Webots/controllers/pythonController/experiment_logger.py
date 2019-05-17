@@ -40,6 +40,10 @@ class ExperimentLogger(object):
     def log_joint_position(self, iteration, joint, position):
         """Log joint position"""
         self.joints[iteration, joint, self.ID_J["position"]] = position
+    
+    def log_joint_velocity(self, iteration, joint, velocity):
+        """Log joint velocity"""
+        self.joints[iteration, joint, self.ID_J["velocity"]] = velocity
 
     def log_joint_cmd(self, iteration, joint, cmd):
         """Log joint cmd"""
@@ -63,12 +67,8 @@ class ExperimentLogger(object):
         self.links[0, :, :] = self.links[1, :, :]
         self.joints[0, :, :] = self.joints[1, :, :]
         # Diff position to extract velocity
-        self.joints[:, :, 1] = (
-            np.diff(self.joints[:, :, 0], axis=0, prepend=0)
-            / self.parameters["timestep"]
-        )
         # Save
-        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        #os.makedirs(os.path.dirname(self.filename), exist_ok=True)
         np.savez(
             self.filename,
             links=self.links,
@@ -76,4 +76,3 @@ class ExperimentLogger(object):
             network=self.network,
             **self.parameters
         )
-

@@ -11,13 +11,18 @@ from parse_args import save_plots
 
 def plot_positions(times, link_data):
     """Plot positions"""
+    
+    plt.title('Spinal joint angles (d=3.5)')
+    
     for i, data in enumerate(link_data.T):
-        plt.plot(times, data)
-    plt.legend(['x', 'y', 'z'])
-    plt.title('Spinal joint angles (d=4.5)')
-    plt.xlabel("Time [s]")
-    plt.ylabel("Distance [m]")
-    plt.grid(True)
+        plt.subplot(10,1,i+1)
+        plt.plot(times, data, label='joint '+str(i+1))
+    #plt.legend(['x', 'y', 'z'])
+        plt.xlabel("Time [s]")
+        plt.ylabel("Distance [m]")
+        plt.grid(True)
+    
+    plt.legend()
 
 
 def plot_trajectory(link_data):
@@ -102,6 +107,8 @@ def main(plot=True):
 #    plt.ylabel('mean velocity')
 #    plt.title('Velocity as a function of oscillation amplitude')
 #    plt.show()
+    
+    
 
     # Show plots
     if plot:

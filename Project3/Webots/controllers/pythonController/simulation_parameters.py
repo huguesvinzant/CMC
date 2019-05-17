@@ -14,7 +14,7 @@ class SimulationParameters(dict):
         self.n_legs_joints = 4
         self.simulation_duration = 30
         self.phase_lag = (2*np.pi/10)
-        self.amplitude_gradient = [0.2,1]
+        self.amplitude_gradient = [1,1]
         self.turn = [1, 'Right']
         # Feel free to add more parameters (ex: MLR drive)
         self.drive_mlr = 1.5
