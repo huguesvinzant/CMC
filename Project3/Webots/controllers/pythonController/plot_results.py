@@ -12,17 +12,21 @@ from parse_args import save_plots
 def plot_positions(times, link_data):
     """Plot positions"""
     
-    plt.title('Spinal joint angles (d=3.5)')
+#    plt.title('Body joint angles', fontsize=20)
+#    for i, data in enumerate(link_data.T):
+#        
+#        plt.plot(times, data+2*i, label='joint '+str(i+1))
+#        
+#        plt.xlabel("Time [s]", fontsize=18)
+#        #plt.ylabel("Distance [m]")
+#        plt.grid(True)
+#    
+#    plt.legend(prop={'size': 12})
     
-    for i, data in enumerate(link_data.T):
-        plt.subplot(10,1,i+1)
-        plt.plot(times, data, label='joint '+str(i+1))
-    #plt.legend(['x', 'y', 'z'])
-        plt.xlabel("Time [s]")
-        plt.ylabel("Distance [m]")
-        plt.grid(True)
-    
-    plt.legend()
+    plt.title('Limb joint angles', fontsize=20)
+    plt.plot(times, link_data)
+    plt.xlabel("Time [s]",  fontsize=18)
+    plt.grid(True)
 
 
 def plot_trajectory(link_data):
@@ -82,7 +86,7 @@ def plot_2d(results, labels, n_data=300, log=False, cmap=None):
 def main(plot=True):
     """Main"""
     # Load data
-    with np.load('logs/simulation9f_0.npz') as data:
+    with np.load('logs/simulation9g.npz') as data:
         timestep = float(data["timestep"])
         #amplitude = data["amplitudes"]
         #phase_lag = data["phase_lag"]
@@ -99,66 +103,66 @@ def main(plot=True):
 #    times = np.arange(0, timestep*np.shape(link_data)[0], timestep)
 #    plot_positions(times, link_data)
     
-    plt.figure("9b")
-    phi = np.array([ 2*np.pi/(3*10), 2*np.pi/(2*10),2*np.pi/10,2*2*np.pi/10, 3*2*np.pi/100])
-    amp = np.linspace(0.1,5.0,25)
-    energy = np.zeros((25,5))
-    for ind, angle in enumerate(phi):
-        for j in range(0, len(amp)):
-            data = np.load("logs/simulation9b_phi{}_amp{}.npz".format(ind,j))
-            velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
-            velocity = np.insert(velocity,0,0,axis = 0)
-            torque = data["joints"][:,:,2]
-            force = velocity*torque
-            totalforce = np.zeros(len(data["joints"][:,1,2]))
-            for a in range (0,len(data["joints"][:,1,2])):
-                totalforce[a]= sum(force[a,:])
-            energy[j,ind] = (np.trapz(abs(totalforce),dx = timestep))
-
-    #outfile.seek(0) #for when you want to open it again
-    plt.imshow(energy.T, extent = [2*3.14/(3*10),6*3.14/10,0,5])
-    plt.xlabel('phase lag')
-    plt.ylabel('amplitude factor')
-    plt.title('Energy estimation')
-    plt.colorbar()
-    plt.show()
+#    plt.figure("9b")
+#    phi = np.array([ 2*np.pi/(3*10), 2*np.pi/(2*10),2*np.pi/10,2*2*np.pi/10, 3*2*np.pi/100])
+#    amp = np.linspace(0.1,5.0,25)
+#    energy = np.zeros((25,5))
+#    for ind, angle in enumerate(phi):
+#        for j in range(0, len(amp)):
+#            data = np.load("logs/simulation9b_phi{}_amp{}.npz".format(ind,j))
+#            velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
+#            velocity = np.insert(velocity,0,0,axis = 0)
+#            torque = data["joints"][:,:,2]
+#            force = velocity*torque
+#            totalforce = np.zeros(len(data["joints"][:,1,2]))
+#            for a in range (0,len(data["joints"][:,1,2])):
+#                totalforce[a]= sum(force[a,:])
+#            energy[j,ind] = (np.trapz(abs(totalforce),dx = timestep))
+#
+#    #outfile.seek(0) #for when you want to open it again
+#    plt.imshow(energy.T, extent = [2*3.14/(3*10),6*3.14/10,0,5])
+#    plt.xlabel('phase lag')
+#    plt.ylabel('amplitude factor')
+#    plt.title('Energy estimation')
+#    plt.colorbar()
+#    plt.show()
     
-    plt.figure("9c")
-    head = np.linspace(0.1,1.5,15)
-    tail = np.linspace(0.1,1.5,15)
-    energy = np.zeros((len(head), len(tail)))
-    speed = np.zeros((len(head), len(tail)))
-    for i in range(0 ,len(head)):
-        for j in range(0,len(tail)):
-            data = np.load("logs/simulation9c_more_head{}_tail{}.npz".format(head[i],tail[j]))
-            velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
-            velocity = np.insert(velocity,0,0,axis = 0)
-            velo = np.diff(data["links"][:,:,0], axis = 0)/timestep
-            velo = np.insert(velocity,0,0,axis = 0)
-            torque = data["joints"][:,:,2]
-            force = velocity*torque
-            totalforce = np.zeros(len(data["joints"][:,1,2]))
-            for a in range (0,len(data["joints"][:,1,2])):
-                totalforce[a]= sum(force[a,:])
-            energy[i,j] = (np.trapz(abs(totalforce),dx = timestep))
-            speed[i,j] = np.mean(abs(velo))
-            
-
-    #outfile.seek(0) #for when you want to open it again
-    plt.imshow(energy, extent = [0.1,1.5,0.1,1.5])
-    plt.xlabel('tail factor')
-    plt.ylabel('head factor')
-    plt.title('Energy estimation')
-    plt.colorbar()
-    plt.show()
-    
-    plt.figure("9c velocity")
-    plt.imshow(energy, extent = [0.1,1.5,0.1,1.5])
-    plt.xlabel('tail factor')
-    plt.ylabel('head factor')
-    plt.title('mean velocity estimation')
-    plt.colorbar()
-    plt.show()
+#    plt.figure("9c")
+#    head = np.linspace(0.1,1.5,15)
+#    tail = np.linspace(0.1,1.5,15)
+#    energy = np.zeros((len(head), len(tail)))
+#    speed = np.zeros((len(head), len(tail)))
+#    for i in range(0 ,len(head)):
+#        for j in range(0,len(tail)):
+#            data = np.load("logs/simulation9c_more_head{}_tail{}.npz".format(head[i],tail[j]))
+#            velocity = np.diff(data["joints"][:,:,0], axis = 0)/timestep
+#            velocity = np.insert(velocity,0,0,axis = 0)
+#            velo = np.diff(data["links"][:,:,0], axis = 0)/timestep
+#            velo = np.insert(velocity,0,0,axis = 0)
+#            torque = data["joints"][:,:,2]
+#            force = velocity*torque
+#            totalforce = np.zeros(len(data["joints"][:,1,2]))
+#            for a in range (0,len(data["joints"][:,1,2])):
+#                totalforce[a]= sum(force[a,:])
+#            energy[i,j] = (np.trapz(abs(totalforce),dx = timestep))
+#            speed[i,j] = np.mean(abs(velo))
+#            
+#
+#    #outfile.seek(0) #for when you want to open it again
+#    plt.imshow(energy, extent = [0.1,1.5,0.1,1.5])
+#    plt.xlabel('tail factor')
+#    plt.ylabel('head factor')
+#    plt.title('Energy estimation')
+#    plt.colorbar()
+#    plt.show()
+#    
+#    plt.figure("9c velocity")
+#    plt.imshow(energy, extent = [0.1,1.5,0.1,1.5])
+#    plt.xlabel('tail factor')
+#    plt.ylabel('head factor')
+#    plt.title('mean velocity estimation')
+#    plt.colorbar()
+#    plt.show()
     
     
     
@@ -168,6 +172,25 @@ def main(plot=True):
 #    plt.ylabel('mean velocity')
 #    plt.title('Velocity as a function of oscillation amplitude')
 #    plt.show()
+    
+    
+    data = np.load("logs/simulation9g.npz")
+    angles = data["joints"][:,:,0] #joint position
+    x_coord = data["links"][:,:,0]
+    
+    plt.figure()
+    plt.title('Land/water transition: x coordinate')
+    plt.plot(times, x_coord)
+    plt.xlabel('Times [s]')
+    plt.ylabel('x coordinate [m]')
+    
+    plt.figure()
+    plot_positions(times, angles[:,:10])
+    
+    plt.figure()
+    plot_positions(times, angles[:,10:]%(2*np.pi))
+
+    
 
     # Show plots
     if plot:
